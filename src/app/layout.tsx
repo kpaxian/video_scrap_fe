@@ -3,27 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 
-import { QueryClient } from '@tanstack/react-query';
-
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            gcTime: 1000 * 60 * 60 * 24 // 24 hours
-        }
-    }
-});
-
-const persister = createSyncStoragePersister({
-    storage: window.localStorage
-});
-
-
-
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -49,14 +28,7 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <PersistQueryClientProvider
-                    client={queryClient}
-                    persistOptions={{persister}}
-                >
-                    {children}
-                    <ReactQueryDevtools />
-                </PersistQueryClientProvider>
-
+                {children}
             </body>
         </html>
     );
