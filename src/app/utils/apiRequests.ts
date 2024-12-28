@@ -1,5 +1,6 @@
 import axios from "axios";
 import { v1 as uuidv1 } from 'uuid';
+import { Format } from "./queryHooks";
 
 
 const SERVER_HOST = 'http://localhost:3003';
@@ -11,11 +12,11 @@ function videoDataProcessor(data: any) {
     const { title, formats: formats } =  data;
 
     //get mp4 videos
-    const mp4List = formats.filter((item) => {
+    const mp4List = formats.filter((item: any) => {
         return item?.mimeType?.includes('video/mp4');
     })
 
-    const filteredFormats = mp4List.map(item => {
+    const filteredFormats = mp4List.map((item: any) => {
         const { mimeType, quality, qualityLabel, url } = item;
         return {
             mimeType, quality, qualityLabel, url,
@@ -42,7 +43,7 @@ export async function getVideoData(videoId: string | null) {
     });
 }
 
-export async function downloadVideo(payload) {
+export async function downloadVideo(payload: Format) {
     console.log('payload is', payload);
     return axios.post(`${SERVER_HOST}/download-video`, payload)
     .then(function (response) {

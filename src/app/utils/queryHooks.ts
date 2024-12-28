@@ -2,19 +2,20 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getVideoData } from './apiRequests';
 
-interface Format {
+export type Format = {
     mimeType: string;
     key: string;
+    quality: string;
     qualityLabel: string;
     url: string;
 }
 
 type VideoDataResponse = {
-    title: string;
-    formats: Format[];
+    title?: string;
+    formats?: Format[];
 }
 
-export function useVideoData(videoId: string | null): VideoDataResponse | object {
+export function useVideoData(videoId: string | null): VideoDataResponse {
     const result  = useQuery({
         queryKey: ['youtube-video', videoId],
         queryFn: () => getVideoData(videoId)

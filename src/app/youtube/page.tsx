@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { useVideoData } from '../utils/queryHooks';
 import { useMutation } from '@tanstack/react-query';
 import { downloadVideo } from '../utils/apiRequests';
-
+import { Format } from '../utils/queryHooks';
 
 const VIDEO_URL = 'https://www.youtube.com/watch?v=wl8WWLM0Y7U';
 
@@ -19,9 +19,8 @@ function getVideoId(url: string): string | null {
     return url.split(splitter)[1];
 };
 
-const FormatsListItem = ( {item }) => {
+const FormatsListItem = ({ item }: { item: Format }) => {
     const { mimeType, quality, qualityLabel } = item;
-
     const mutation = useMutation({
         mutationFn: downloadVideo
     })
@@ -45,9 +44,9 @@ const FormatsListItem = ( {item }) => {
 }
 
 
-const FormatsList = ({ formats }) => {
+const FormatsList = ({ formats }: {formats: Format[] | undefined}) => {
     if (isEmpty(formats)) return null;
-    return formats.map(item => <FormatsListItem key={item.key} item={item}/>)
+    return formats?.map(item => <FormatsListItem key={item.key} item={item}/>)
 }
 
 export default function Youtube() {
