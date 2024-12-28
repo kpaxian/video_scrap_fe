@@ -1,11 +1,15 @@
 'use client';
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
+
+import { useVideoData } from '../utils/queryHooks';
+import { useMutation } from '@tanstack/react-query';
+import { downloadVideo } from '../utils/apiRequests';
+
 
 const VIDEO_URL = 'https://www.youtube.com/watch?v=wl8WWLM0Y7U';
 
-function getVideoId(url: string) {
+function getVideoId(url: string): string | null {
     const splitter = 'watch?v=';
 
     if (!url.includes(splitter)) {
@@ -13,50 +17,51 @@ function getVideoId(url: string) {
     }
 
     return url.split(splitter)[1];
+};
+
+const FormatsListItem = ( {item }) => {
+    const { mimeType, quality, qualityLabel } = item;
+
+    const mutation = useMutation({
+        mutationFn: downloadVideo
+    })
+    const buttonHandler = () => {
+        mutation.mutate({ ...item });
+    }
+    return (
+        <ul className="formats-list bg-zinc-900 p-2 my-2 rounded-md flex flex-row text-xs" key={item.key}>
+            <li>{mimeType}</li>
+            <li>{quality}</li>
+            <li>{qualityLabel}</li>
+            <li>
+                <button
+                    onClick={buttonHandler}
+                >
+                    Download
+                </button>
+            </li>
+        </ul>
+    )
+}
+
+
+const FormatsList = ({ formats }) => {
+    if (isEmpty(formats)) return null;
+    return formats.map(item => <FormatsListItem key={item.key} item={item}/>)
 }
 
 export default function Youtube() {
-    const [title, setTitle] = useState<string>('');
-    const [formats, setFormats] = useState<unknown[]>([])
     const videoId = getVideoId(VIDEO_URL);
+    const { title, formats } = useVideoData(videoId);
+    console.log('video data', {
+        title, formats
+    })
 
-
-    useEffect(() => {
-        axios.post('http://localhost:3003/youtube-video', {
-            videoId
-        })
-        .then(function (response) {
-            console.log(response.data.formats);
-            setTitle(response.data.title);
-
-            const { formats: fmt } = response.data;
-
-            const mimeTypes = fmt.map(item => {
-                return item.mimeType;
-            })
-
-            const validFormats = fmt.filter(item => {
-                console.log('item', item);
-                return item?.mimeType?.includes('video/mp4');
-            })
-
-            console.log('mimeTypes', mimeTypes);
-
-            setFormats(validFormats);
-
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }, [])
-
-    return formats ? (
-        <>
-            <h1>{title}</h1>
-            {formats.map((item) => {
-                <h3>sfkdjfk</h3>
-            })}
-        </>
-    ) : null;
+    return (
+        <div>
+            {title && (<h3>{title}</h3>)}
+            <FormatsList formats={formats}/>
+        </div>
+    );
 
 }

@@ -27,7 +27,9 @@ export default function Layout({
             client={queryClient}
             persistOptions={{persister}}
         >
-            {children}
+            <div className='container mx-auto'>
+                {children}
+            </div>
             <ReactQueryDevtools />
         </PersistQueryClientProvider>
     )

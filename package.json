@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "checkTs": "tsc --noEmit --incremental"
   },
   "dependencies": {
     "@tanstack/query-sync-storage-persister": "^5.62.9",
@@ -14,12 +15,15 @@
     "@tanstack/react-query-devtools": "^5.62.10",
     "@tanstack/react-query-persist-client": "^5.62.10",
     "axios": "^1.7.9",
+    "lodash": "^4.17.21",
     "next": "15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
